@@ -5,7 +5,7 @@ No major changes will be made except for the existing features.
 
 Relational table query(join, lazy loading) etc. will not be added.
 
-We've created this for studying purposes only, any use other than that is not guaranteed.
+We've created this for studying purposes only.
 
 # Usage
 ````
