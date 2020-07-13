@@ -3,11 +3,9 @@ Dapper Sql Query Generater with Repository Design Pattern
 
 No major changes will be made except for the existing features.
 
-We've done this to make your small and repetitive tasks easier.
-
 Relational table query(join, lazy loading) etc. will not be added.
 
-If we want our code to run fast, we have to do our big business manually and consciously.
+We've created this for studying purposes only.
 
 # Usage
 ````
