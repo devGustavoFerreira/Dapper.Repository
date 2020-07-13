@@ -6,7 +6,7 @@ namespace DapperRepository.Providers
     {
         public static IProvider GetProvider(string providerName)
         {
-            if (string.Equals(providerName, "System.Data.SqlClient", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(providerName, "SqlServer", StringComparison.InvariantCultureIgnoreCase))
                 return new SqlServerProvider();
 
             return null;

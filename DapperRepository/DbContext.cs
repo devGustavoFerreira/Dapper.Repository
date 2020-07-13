@@ -1,9 +1,12 @@
 ﻿using Dapper;
 using DapperRepository.Providers;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -22,14 +25,18 @@ namespace DapperRepository
         #endregion
 
         #region Ctor
-        public DataContext(string connectionName)
+        public DataContext(DatabaseConfiguration configuration = null)
         {
-            Check.IsEmpty(connectionName);
+            if (configuration == null)
+            {
+                var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                var config = builder.Build();
+                configuration  = new DatabaseConfiguration() { ProviderName = config.GetValue<string>("Database:ProviderName"), ConnectionString = config.GetValue<string>("Database:ConnectionString") };
+            }
 
-            var connectionString = ConfigurationManager.ConnectionStrings[connectionName];
-
-            _provider = ProviderHelper.GetProvider(connectionString.ProviderName);
-            _connection = _provider.CreateConnection(connectionString.ConnectionString);
+            _provider = ProviderHelper.GetProvider(configuration.ProviderName);
+            _connection = _provider.CreateConnection(configuration.ConnectionString);
         }
         #endregion
 
@@ -124,7 +131,7 @@ namespace DapperRepository
             var parameters = GetParameters(items);
 
             //execute
-           return _connection.Execute(commandText, parameters, transaction);
+            return _connection.Execute(commandText, parameters, transaction);
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace DapperRepository
         #region Ctor
         public Repository()
         {
-            _dataContext = new DataContext("DbConnection");
+            _dataContext = new DataContext();
         }
         #endregion
 

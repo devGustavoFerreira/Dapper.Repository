@@ -67,7 +67,7 @@ namespace DapperRepository.Tests
             IProvider provider = new SqlServerProvider();
             string commandText = provider.SelectFirstQuery<Product>(x => x.Id > 0, "Product");
 
-            Assert.AreEqual(commandText, "SELECT TOP(1)\r\n [Product].[Name],\r\n[Product].[Price],\r\n[Product].[UpdatedDate],\r\n[Product].[CreatedDate],\r\n[Product].[Id] FROM [Product] WHERE Id > @Id");
+            Assert.AreEqual(commandText, "SELECT TOP(1)\r\n[Product].[Name],\r\n[Product].[Price],\r\n[Product].[UpdatedDate],\r\n[Product].[CreatedDate],\r\n[Product].[Id] FROM [Product] WHERE [Product].[Id] > @Id");
         }
 
         [TestMethod]
@@ -76,7 +76,7 @@ namespace DapperRepository.Tests
             IProvider provider = new SqlServerProvider();
             string commandText = provider.SelectQuery<Product>(p => p.Id > 0, "Product");
 
-            Assert.AreEqual(commandText, "SELECT\r\n [Product].[Name],\r\n[Product].[Price],\r\n[Product].[UpdatedDate],\r\n[Product].[CreatedDate],\r\n[Product].[Id] FROM [Product] WHERE Id > @Id");
+            Assert.AreEqual(commandText, "SELECT\r\n [Product].[Name],\r\n[Product].[Price],\r\n[Product].[UpdatedDate],\r\n[Product].[CreatedDate],\r\n[Product].[Id] FROM [Product] WHERE [Product].[Id] > @Id");
         }
     }
 }

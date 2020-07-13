@@ -11,7 +11,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void InstanceCreation()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             Assert.AreNotEqual(context, null);
 
@@ -21,7 +21,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void GetConnection()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
             var connection = context.Connection;
 
             Assert.AreEqual(connection.State, System.Data.ConnectionState.Open);
@@ -32,7 +32,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void BeginTransaction()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
             var transaction = context.BeginTransaction();
 
             Assert.AreEqual(transaction.Connection.State, System.Data.ConnectionState.Open);
@@ -45,7 +45,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void Insert()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             context.Insert(product);
@@ -57,7 +57,7 @@ namespace DapperRepository.Tests
 
         public void InsertBulk()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = context.InsertBulk(products);
@@ -70,7 +70,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void Update()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             context.Update(product);
@@ -82,7 +82,7 @@ namespace DapperRepository.Tests
 
         public void UpdateBulk()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = context.UpdateBulk(products);
@@ -95,7 +95,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void Delete()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             context.Delete(product);
@@ -108,7 +108,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void DeleteBulk()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = context.DeleteBulk(products);
@@ -121,7 +121,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public void Find()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = context.Find<Product>(x => x.Id > 0 );
             
@@ -133,7 +133,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public async Task InsertAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             await context.InsertAsync(product);
@@ -145,7 +145,7 @@ namespace DapperRepository.Tests
 
         public async Task InsertBulkAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = await context.InsertBulkAsync(products);
@@ -158,7 +158,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public async Task UpdateAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             await context.UpdateAsync(product);
@@ -170,7 +170,7 @@ namespace DapperRepository.Tests
 
         public async Task UpdateBulkAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = await context.UpdateBulkAsync(products);
@@ -183,7 +183,7 @@ namespace DapperRepository.Tests
         [TestMethod]
         public async Task DeleteAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var product = new Product();
             await context.DeleteAsync(product);
@@ -195,7 +195,7 @@ namespace DapperRepository.Tests
 
         public async Task DeleteBulkAsync()
         {
-            DataContext context = new DataContext("DbConnection");
+            DataContext context = new DataContext();
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = await context.DeleteBulkAsync(products);
