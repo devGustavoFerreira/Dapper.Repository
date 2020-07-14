@@ -56,18 +56,6 @@ namespace DapperRepository
             }
         }
 
-        public void UpdateBulk(IEnumerable<T> items)
-        {
-            try
-            {
-                _dataContext.UpdateBulk(items);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-            }
-        }
-
         public void Delete(T item)
         {
             try

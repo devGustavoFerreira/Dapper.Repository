@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace DapperRepository.Providers.SqlServer
+namespace DapperRepository.Providers.MySql
 {
     public class WhereBuilder
     {
@@ -20,12 +20,12 @@ namespace DapperRepository.Providers.SqlServer
             if (expression is UnaryExpression unary)
             {
                 var right = Recurse(unary.Operand, tableName, true);
-                return string.Format("[{0}].[{1}] @{2}", tableName, NodeTypeToString(unary.NodeType, right == "NULL"), right);
+                return string.Format("`{0}`.`{1}` @{2}", tableName, NodeTypeToString(unary.NodeType, right == "NULL"), right);
             }
             else if (expression is BinaryExpression body)
             {
                 string right = Recurse(body.Left, tableName);
-                return string.Format("[{0}].[{1}] {2} @{3}", tableName, Recurse(body.Left, tableName), NodeTypeToString(body.NodeType, right == "NULL"), right);
+                return string.Format("`{0}`.`{1}` {2} @{3}", tableName, Recurse(body.Left, tableName), NodeTypeToString(body.NodeType, right == "NULL"), right);
             }
             else if (expression is ConstantExpression constant)
             {
@@ -37,7 +37,7 @@ namespace DapperRepository.Providers.SqlServer
                 {
                     if (isUnary && member.Type == typeof(bool))
                     {
-                        return string.Format("([{0}].[{1}] = 1)", tableName, property.Name);
+                        return string.Format("(`{0}`.`{1}` != 0)", tableName, property.Name);
                     }
 
                     return property.Name;
@@ -54,15 +54,15 @@ namespace DapperRepository.Providers.SqlServer
                 // LIKE queries:
                 if (methodCall.Method == typeof(string).GetMethod("Contains", new[] { typeof(string) }))
                 {
-                    return string.Format("([{0}].[{1}] LIKE '%@{2}%')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
+                    return string.Format("(`{0}`.`{1}` LIKE '%@{2}%')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
                 }
                 if (methodCall.Method == typeof(string).GetMethod("StartsWith", new[] { typeof(string) }))
                 {
-                    return string.Format("(([{0}].[{1}] LIKE '@{2}%')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
+                    return string.Format("((`{0}`.`{1}` LIKE '@{2}%')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
                 }
                 if (methodCall.Method == typeof(string).GetMethod("EndsWith", new[] { typeof(string) }))
                 {
-                    return string.Format("([{0}].[{1}] LIKE '%@{2}')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
+                    return string.Format("(`{0}`.`{1}` LIKE '%@{2}')", tableName, Recurse(methodCall.Object, tableName), Recurse(methodCall.Arguments[0], tableName));
                 }
                 // IN queries:
                 if (methodCall.Method.Name == "Contains")
@@ -96,7 +96,7 @@ namespace DapperRepository.Providers.SqlServer
                         return ValueToString(false, true);
                     }
 
-                    return string.Format("([{0}].[{1}] IN ({2}))", tableName, Recurse(property, tableName), concated.Substring(0, concated.Length - 2));
+                    return string.Format("(`{0}`.`{1}` IN ({2}))", tableName, Recurse(property, tableName), concated.Substring(0, concated.Length - 2));
                 }
 
                 throw new Exception("Unsupported method call: " + methodCall.Method.Name);

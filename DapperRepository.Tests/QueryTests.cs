@@ -1,4 +1,5 @@
 ﻿using DapperRepository.Providers;
+using DapperRepository.Providers.SqlServer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 

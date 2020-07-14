@@ -9,7 +9,6 @@ namespace DapperRepository
         void Insert(T item);
         void InsertBulk(IEnumerable<T> items);
         void Update(T item);
-        void UpdateBulk(IEnumerable<T> items);
         void Delete(T item);
         void DeleteBulk(IEnumerable<T> items);
         T Find(int Id);

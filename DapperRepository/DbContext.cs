@@ -32,7 +32,7 @@ namespace DapperRepository
                 var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
                               .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                 var config = builder.Build();
-                configuration  = new DatabaseConfiguration() { ProviderName = config.GetValue<string>("Database:ProviderName"), ConnectionString = config.GetValue<string>("Database:ConnectionString") };
+                configuration = new DatabaseConfiguration() { ProviderName = config.GetValue<string>("Database:ProviderName"), ConnectionString = config.GetValue<string>("Database:ConnectionString") };
             }
 
             _provider = ProviderHelper.GetProvider(configuration.ProviderName);
@@ -123,16 +123,7 @@ namespace DapperRepository
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="transaction"></param>
-        public virtual int UpdateBulk<T>(IEnumerable<T> items, IDbTransaction transaction = null) where T : BaseEntity
-        {
-            Check.IsNullOrEmpty(items);
-
-            string commandText = _provider.UpdateBulkQuery(typeof(T).Name, items);
-            var parameters = GetParameters(items);
-
-            //execute
-            return _connection.Execute(commandText, parameters, transaction);
-        }
+       
 
         /// <summary>
         /// Delete an item
@@ -161,10 +152,11 @@ namespace DapperRepository
             Check.IsNullOrEmpty(items);
 
             string commandText = _provider.DeleteBulkQuery(typeof(T).Name);
-            var parameters = items.Select(x => x.Id).ToArray();
+            var parameters = string.Join(',',items.Select(x => x.Id));
+            commandText = commandText.Replace("@Ids", parameters);
 
             //execute
-            return _connection.Execute(commandText, new { Ids = parameters });
+            return _connection.Execute(commandText);
         }
 
         /// <summary>
@@ -190,10 +182,17 @@ namespace DapperRepository
         public virtual T Find<T>(Expression<Func<T, bool>> expression) where T : BaseEntity
         {
             string commandText = _provider.SelectFirstQuery<T>(expression, typeof(T).Name);
-            var parameters = ExpressionHelper.GetWhereParemeters(expression);
+            if (expression != null)
+            {
+                var parameters = ExpressionHelper.GetWhereParemeters(expression);
 
-            //execute first query
-            return _connection.QueryFirst<T>(commandText, parameters);
+                //execute first query
+                return _connection.QueryFirst<T>(commandText, parameters);
+            }
+            else
+            {
+                return _connection.QueryFirst<T>(commandText);
+            }
         }
 
         /// <summary>
@@ -206,10 +205,17 @@ namespace DapperRepository
         {
             IEnumerable<T> items = new List<T>();
             string commandText = _provider.SelectQuery<T>(expression, typeof(T).Name);
-            var parameters = ExpressionHelper.GetWhereParemeters(expression);
+            if (expression != null)
+            {
+                var parameters = ExpressionHelper.GetWhereParemeters(expression);
 
-            //execute query
-            return _connection.Query<T>(commandText, parameters);
+                //execute first query
+                return _connection.Query<T>(commandText, parameters);
+            }
+            else
+            {
+                return _connection.Query<T>(commandText);
+            }
         }
 
         /// <summary>
@@ -344,17 +350,6 @@ namespace DapperRepository
             return await _connection.ExecuteAsync(commandText, item, transaction);
         }
 
-        public async Task<int> UpdateBulkAsync<T>(IEnumerable<T> items, IDbTransaction transaction = null) where T : BaseEntity
-        {
-            Check.IsNullOrEmpty(items);
-
-            string commandText = _provider.UpdateBulkQuery(typeof(T).Name, items);
-            var parameters = GetParameters(items);
-
-            //execute
-            return await _connection.ExecuteAsync(commandText, parameters, transaction);
-        }
-
         public async Task<int> DeleteAsync<T>(T item, IDbTransaction transaction = null) where T : BaseEntity
         {
             Check.IsNull(item);
@@ -387,20 +382,34 @@ namespace DapperRepository
         public async Task<T> FindAsync<T>(Expression<Func<T, bool>> expression) where T : BaseEntity
         {
             string commandText = _provider.SelectFirstQuery<T>(expression, typeof(T).Name);
-            var parameters = ExpressionHelper.GetWhereParemeters(expression);
+            if (expression != null)
+            {
+                var parameters = ExpressionHelper.GetWhereParemeters(expression);
 
-            //execute first query
-            return await _connection.QueryFirstAsync<T>(commandText, parameters);
+                //execute first query
+                return await _connection.QueryFirstAsync<T>(commandText, parameters);
+            }
+            else
+            {
+                return await _connection.QueryFirstAsync<T>(commandText);
+            }
         }
 
         public async Task<IEnumerable<T>> FindAllAsync<T>(Expression<Func<T, bool>> expression) where T : BaseEntity
         {
             IEnumerable<T> items = new List<T>();
             string commandText = _provider.SelectQuery<T>(expression, typeof(T).Name);
-            var parameters = ExpressionHelper.GetWhereParemeters(expression);
+            if (expression != null)
+            {
+                var parameters = ExpressionHelper.GetWhereParemeters(expression);
 
-            //execute query
-            return await _connection.QueryAsync<T>(commandText, parameters);
+                //execute first query
+                return await _connection.QueryAsync<T>(commandText, parameters);
+            }
+            else
+            {
+                return await _connection.QueryAsync<T>(commandText);
+            }
         }
 
         public async Task<int> ExecuteAsync(string commandText, object parameters = null, IDbTransaction transaction = null)

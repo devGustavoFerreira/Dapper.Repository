@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace DapperRepository.Providers
+namespace DapperRepository.Providers.SqlServer
 {
     public class SqlServerProvider : IProvider
     {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DapperRepository.Tests
@@ -55,11 +57,12 @@ namespace DapperRepository.Tests
             context.Dispose();
         }
 
+        [TestMethod]
         public void InsertBulk()
         {
             DataContext context = new DataContext();
 
-            var products = new List<Product> { new Product(), new Product(), new Product() };
+            var products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product() };
             int rowCount = context.InsertBulk(products);
 
             Assert.AreNotEqual(rowCount, 0);
@@ -72,22 +75,11 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var product = new Product();
-            context.Update(product);
+            var product = context.Find<Product>(expression: null);
+            product.UpdatedDate = System.DateTime.Now;
+            var rowsAffected = context.Update(product);
 
-            Assert.AreNotEqual(product.Id, 0);
-
-            context.Dispose();
-        }
-
-        public void UpdateBulk()
-        {
-            DataContext context = new DataContext();
-
-            var products = new List<Product> { new Product(), new Product(), new Product() };
-            int rowCount = context.UpdateBulk(products);
-
-            Assert.AreNotEqual(rowCount, 0);
+            Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
         }
@@ -97,10 +89,10 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var product = new Product();
-            context.Delete(product);
+            var product = context.Find<Product>(expression: null);
+            var rowsAffected = context.Delete(product);
 
-            Assert.AreNotEqual(product.Id, 0);
+            Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
         }
@@ -110,7 +102,7 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var products = new List<Product> { new Product(), new Product(), new Product() };
+            var products = context.FindAll<Product>(p => p.Id > 0).Take(3);
             int rowCount = context.DeleteBulk(products);
 
             Assert.AreNotEqual(rowCount, 0);
@@ -123,8 +115,8 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var product = context.Find<Product>(x => x.Id > 0 );
-            
+            var product = context.Find<Product>(x => x.Id > 0);
+
             Assert.AreNotEqual(product, null);
         }
         #endregion
@@ -143,6 +135,7 @@ namespace DapperRepository.Tests
             context.Dispose();
         }
 
+        [TestMethod]
         public async Task InsertBulkAsync()
         {
             DataContext context = new DataContext();
@@ -160,22 +153,11 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var product = new Product();
-            await context.UpdateAsync(product);
+            var product = context.Find<Product>(null);
+            product.UpdatedDate = DateTime.Now;
+            var rowsAffected = await context.UpdateAsync(product);
 
-            Assert.AreNotEqual(product.Id, 0);
-
-            context.Dispose();
-        }
-
-        public async Task UpdateBulkAsync()
-        {
-            DataContext context = new DataContext();
-
-            var products = new List<Product> { new Product(), new Product(), new Product() };
-            int rowCount = await context.UpdateBulkAsync(products);
-
-            Assert.AreNotEqual(rowCount, 0);
+            Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
         }
@@ -185,10 +167,10 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var product = new Product();
-            await context.DeleteAsync(product);
+            var product = context.Find<Product>(null);
+            var rowsAffected = await context.DeleteAsync(product);
 
-            Assert.AreNotEqual(product.Id, 0);
+            Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
         }
