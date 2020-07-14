@@ -18,6 +18,8 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(context, null);
 
             context.Dispose();
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+            Assert.AreNotEqual(context, null);
         }
 
         [TestMethod]
@@ -28,6 +30,11 @@ namespace DapperRepository.Tests
 
             Assert.AreEqual(connection.State, System.Data.ConnectionState.Open);
 
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+            connection = context.Connection;
+            Assert.AreEqual(connection.State, System.Data.ConnectionState.Open);
             context.Dispose();
         }
 
@@ -40,6 +47,10 @@ namespace DapperRepository.Tests
             Assert.AreEqual(transaction.Connection.State, System.Data.ConnectionState.Open);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+            transaction = context.BeginTransaction();
+            Assert.AreEqual(transaction.Connection.State, System.Data.ConnectionState.Open);
         }
         #endregion
 
@@ -50,6 +61,15 @@ namespace DapperRepository.Tests
             DataContext context = new DataContext();
 
             var product = new Product();
+            context.Insert(product);
+
+            Assert.AreNotEqual(product.Id, 0);
+
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = new Product();
             context.Insert(product);
 
             Assert.AreNotEqual(product.Id, 0);
@@ -68,6 +88,15 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(rowCount, 0);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product() };
+            rowCount = context.InsertBulk(products);
+
+            Assert.AreEqual(rowCount, 5);
+
+            context.Dispose();
         }
 
         [TestMethod]
@@ -78,6 +107,16 @@ namespace DapperRepository.Tests
             var product = context.Find<Product>(expression: null);
             product.UpdatedDate = System.DateTime.Now;
             var rowsAffected = context.Update(product);
+
+            Assert.AreNotEqual(rowsAffected, 0);
+
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = context.Find<Product>(expression: null);
+            product.UpdatedDate = System.DateTime.Now;
+            rowsAffected = context.Update(product);
 
             Assert.AreNotEqual(rowsAffected, 0);
 
@@ -95,6 +134,15 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = context.Find<Product>(expression: null);
+            rowsAffected = context.Delete(product);
+
+            Assert.AreNotEqual(rowsAffected, 0);
+
+            context.Dispose();
         }
 
         [TestMethod]
@@ -104,6 +152,15 @@ namespace DapperRepository.Tests
 
             var products = context.FindAll<Product>(p => p.Id > 0).Take(3);
             int rowCount = context.DeleteBulk(products);
+
+            Assert.AreNotEqual(rowCount, 0);
+
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            products = context.FindAll<Product>(p => p.Id > 0).Take(3);
+            rowCount = context.DeleteBulk(products);
 
             Assert.AreNotEqual(rowCount, 0);
 
@@ -118,6 +175,12 @@ namespace DapperRepository.Tests
             var product = context.Find<Product>(x => x.Id > 0);
 
             Assert.AreNotEqual(product, null);
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = context.Find<Product>(x => x.Id > 0);
+
+            Assert.AreNotEqual(product, null);
         }
         #endregion
 
@@ -128,6 +191,15 @@ namespace DapperRepository.Tests
             DataContext context = new DataContext();
 
             var product = new Product();
+            await context.InsertAsync(product);
+
+            Assert.AreNotEqual(product.Id, 0);
+
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = new Product();
             await context.InsertAsync(product);
 
             Assert.AreNotEqual(product.Id, 0);
@@ -146,6 +218,15 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(rowCount, 0);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            products = new List<Product> { new Product(), new Product(), new Product() };
+            rowCount = await context.InsertBulkAsync(products);
+
+            Assert.AreNotEqual(rowCount, 0);
+
+            context.Dispose();
         }
 
         [TestMethod]
@@ -160,6 +241,17 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = context.Find<Product>(null);
+            product.UpdatedDate = DateTime.Now;
+            rowsAffected = await context.UpdateAsync(product);
+
+            Assert.AreNotEqual(rowsAffected, 0);
+
+            context.Dispose();
+
         }
 
         [TestMethod]
@@ -173,6 +265,15 @@ namespace DapperRepository.Tests
             Assert.AreNotEqual(rowsAffected, 0);
 
             context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            product = context.Find<Product>(null);
+            rowsAffected = await context.DeleteAsync(product);
+
+            Assert.AreNotEqual(rowsAffected, 0);
+
+            context.Dispose();
         }
 
         public async Task DeleteBulkAsync()
@@ -181,6 +282,15 @@ namespace DapperRepository.Tests
 
             var products = new List<Product> { new Product(), new Product(), new Product() };
             int rowCount = await context.DeleteBulkAsync(products);
+
+            Assert.AreNotEqual(rowCount, 0);
+
+            context.Dispose();
+
+            context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
+
+            products = new List<Product> { new Product(), new Product(), new Product() };
+            rowCount = await context.DeleteBulkAsync(products);
 
             Assert.AreNotEqual(rowCount, 0);
 

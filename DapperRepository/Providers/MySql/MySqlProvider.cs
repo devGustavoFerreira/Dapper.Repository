@@ -9,17 +9,17 @@ using System.Reflection;
 using System.Text;
 namespace DapperRepository.Providers.MySql
 {
-    public class MySqlProvider
+    public class MySqlProvider : IProvider 
     {
         #region Constant
         private const string INSERT_QUERY = "INSERT INTO `{0}`({1}) VALUES(@{2}); SELECT Last_Insert_Id();";
-        private const string INSERT_BULK_QUERY = "INSERT INTO `{0}`({1}) VALUES ({2})\r\n";
+        private const string INSERT_BULK_QUERY = "INSERT INTO `{0}`({1}) VALUES ({2});\r\n";
         private const string UPDATE_QUERY = "UPDATE `{0}` SET {1} WHERE `{0}`.`Id` = @Id";
         private const string UPDATE_BULK_QUERY = "UPDATE `{0}` SET {1} WHERE `{0}`.`Id` = @Id\r\n";
         private const string DELETE_QUERY = "DELETE FROM `{0}` WHERE `{0}`.`Id` = @Id";
         private const string DELETE_BULK_QUERY = "DELETE FROM `{0}` WHERE `{0}`.`Id` IN(@Ids)";
         private const string SELECT_QUERY = "SELECT\r\n {1} FROM `{0}`";
-        private const string SELECT_FIRST_QUERY = "SELECT {1} FROM `{0}`\r\nLIMIT 1;";
+        private const string SELECT_FIRST_QUERY = "SELECT {1} FROM `{0}`\r\n";
         #endregion
 
         #region Fields
@@ -163,7 +163,7 @@ namespace DapperRepository.Providers.MySql
                     query = string.Format("{0} WHERE {1}", query, whereClasure);
             }
 
-            return query;
+            return $"{query} LIMIT 1;";
         }
         #endregion
     }
