@@ -82,19 +82,19 @@ namespace DapperRepository.Tests
         {
             DataContext context = new DataContext();
 
-            var products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product() };
+            var products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product() };
             int rowCount = context.InsertBulk(products);
 
-            Assert.AreNotEqual(rowCount, 0);
+            Assert.AreEqual(rowCount, 10);
 
             context.Dispose();
 
             context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
 
-            products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product() };
+            products = new List<Product> { new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product(), new Product() };
             rowCount = context.InsertBulk(products);
 
-            Assert.AreEqual(rowCount, 5);
+            Assert.AreEqual(rowCount, 10);
 
             context.Dispose();
         }
@@ -275,12 +275,12 @@ namespace DapperRepository.Tests
 
             context.Dispose();
         }
-
+        [TestMethod]
         public async Task DeleteBulkAsync()
         {
             DataContext context = new DataContext();
 
-            var products = new List<Product> { new Product(), new Product(), new Product() };
+            var products = context.FindAll<Product>(null).Take(3);
             int rowCount = await context.DeleteBulkAsync(products);
 
             Assert.AreNotEqual(rowCount, 0);
@@ -289,7 +289,7 @@ namespace DapperRepository.Tests
 
             context = new DataContext(new DatabaseConfiguration() { ConnectionString = "Server=localhost;User=root;Password=1234;Database=demonstration;",ProviderName="MySql" });
 
-            products = new List<Product> { new Product(), new Product(), new Product() };
+            products = context.FindAll<Product>(null).Take(3);
             rowCount = await context.DeleteBulkAsync(products);
 
             Assert.AreNotEqual(rowCount, 0);

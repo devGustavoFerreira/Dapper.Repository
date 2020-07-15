@@ -123,7 +123,7 @@ namespace DapperRepository
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="transaction"></param>
-       
+
 
         /// <summary>
         /// Delete an item
@@ -152,7 +152,7 @@ namespace DapperRepository
             Check.IsNullOrEmpty(items);
 
             string commandText = _provider.DeleteBulkQuery(typeof(T).Name);
-            var parameters = string.Join(',',items.Select(x => x.Id));
+            var parameters = string.Join(',', items.Select(x => x.Id));
             commandText = commandText.Replace("@Ids", parameters);
 
             //execute
@@ -364,11 +364,12 @@ namespace DapperRepository
         {
             Check.IsNullOrEmpty(items);
 
-            string commandText = _provider.UpdateBulkQuery(typeof(T).Name, items);
-            var parameters = GetParameters(items);
+            string commandText = _provider.DeleteBulkQuery(typeof(T).Name);
+            var parameters = string.Join(',', items.Select(x => x.Id));
+            commandText = commandText.Replace("@Ids", parameters);
 
             //execute
-            return await _connection.ExecuteAsync(commandText, parameters, transaction);
+            return await _connection.ExecuteAsync(commandText, transaction: transaction);
         }
 
         public async Task<T> FindAsync<T>(int Id) where T : BaseEntity

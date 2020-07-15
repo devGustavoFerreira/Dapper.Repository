@@ -78,3 +78,5 @@ src/packages/*
 glob:*.user
 *.patch
 *.hg
+
+[Dd]emonstration
