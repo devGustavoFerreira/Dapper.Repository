@@ -25,18 +25,10 @@ namespace DapperRepository
         #endregion
 
         #region Ctor
-        public DataContext(DatabaseConfiguration configuration = null)
+        public DataContext(IProvider provider)
         {
-            if (configuration == null)
-            {
-                var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
-                              .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-                var config = builder.Build();
-                configuration = new DatabaseConfiguration() { ProviderName = config.GetValue<string>("Database:ProviderName"), ConnectionString = config.GetValue<string>("Database:ConnectionString") };
-            }
-
-            _provider = ProviderHelper.GetProvider(configuration.ProviderName);
-            _connection = _provider.CreateConnection(configuration.ConnectionString);
+            _provider = provider;            
+            _connection = _provider.CreateConnection();
         }
         #endregion
 

@@ -43,9 +43,9 @@ namespace DapperRepository.Providers.SqlServer
         #endregion
 
         #region Methods
-        public virtual IDbConnection CreateConnection(string connectionString)
+        public virtual IDbConnection CreateConnection()
         {
-            _connection = new SqlConnection(connectionString);
+            _connection = new SqlConnection("Server = localhost;Database = demonstration;Trusted_Connection = True;");
 
             return _connection;
         }

@@ -13,9 +13,9 @@ namespace DapperRepository
         #endregion
 
         #region Ctor
-        public Repository()
+        public Repository(IDataContext dataContext)
         {
-            _dataContext = new DataContext();
+            _dataContext = dataContext;
         }
         #endregion
 
@@ -96,4 +96,5 @@ namespace DapperRepository
         }
         #endregion
     }
+    
 }

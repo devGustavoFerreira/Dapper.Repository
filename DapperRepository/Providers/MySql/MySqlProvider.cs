@@ -43,9 +43,9 @@ namespace DapperRepository.Providers.MySql
         #endregion
 
         #region Methods
-        public virtual IDbConnection CreateConnection(string connectionString)
+        public virtual IDbConnection CreateConnection()
         {
-            _connection = new MySqlConnection(connectionString);
+            _connection = new MySqlConnection("Server=localhost;User=root;Password=1234;Database=demonstration;");
 
             return _connection;
         }

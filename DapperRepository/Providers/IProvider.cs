@@ -7,7 +7,7 @@ namespace DapperRepository.Providers
 {
     public interface IProvider
     {
-        IDbConnection CreateConnection(string connectionString);
+        IDbConnection CreateConnection();
         string InsertQuery(string tableName, object entity);
         string InsertBulkQuery(string tableName, IEnumerable<object> entities);
         string UpdateQuery(string tableName, object entity);

@@ -18,6 +18,11 @@
     <Folder Include="Properties\" />
   </ItemGroup> 
   <ItemGroup>
+    <Compile Update="BaseEntity.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup> 
+  <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
